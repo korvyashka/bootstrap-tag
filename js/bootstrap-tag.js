@@ -105,10 +105,12 @@
 
       this.element.trigger('shown')
     }
-  , inValues: function ( value ) {
+  , inValues: function ( value , list) {
+      if (!list)
+        list = this.values
       if (this.options.caseInsensitive) {
         var index = -1
-        $.each(this.values, function (indexInArray, valueOfElement) {
+        $.each(list, function (indexInArray, valueOfElement) {
           if ( valueOfElement.toLowerCase() == value.toLowerCase() ) {
             index = indexInArray
             return false
@@ -116,7 +118,7 @@
         })
         return index
       } else {
-        return $.inArray(value, this.values)
+        return $.inArray(value, list)
       }
     }
   , createBadge: function ( value ) {
@@ -145,6 +147,13 @@
             $(badge).removeClass('tag-warning')
           }, 500)
           return
+        }
+      }
+
+      if (that.options.source && that.options.onlySourceValues) {
+        var index = that.inValues(value, this.options.source)
+        if (index == -1){
+            return
         }
       }
 
@@ -192,6 +201,7 @@
   , autocompleteOnComma: false
   , placeholder: ''
   , source: []
+  , onlySourceValues: false
   }
 
   $.fn.tag.Constructor = Tag
